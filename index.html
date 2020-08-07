@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="navbar navbar-expand-lg bg-dark">
+        <div class="navbar-brand text-warning">To Do List v.01 <p style="font-size: 8px" class="text-light">smart contract - V</p></div>
+    </div>
+    <div class="container align-content-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group m-4">
+                    <input type="text" class="form-control text-danger" placeholder="Task Name" id="tname">
+                    <button class="btn btn-deep-orange" id="confirm"> Confirm Task</button>
+                </div>
+                <table class="text-center table-hover table-bordered lime m-4" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>TASK ID</th>
+                        <th>TASK NAME</th>
+                    </tr>
+                    </thead>
+                    <tbody id="datainput">
+
+                        <script>
+                            var length=0;
+                            if(typeof web3 !== 'undefined')
+                            {
+                                web3  = new Web3(web3.currentProvider());
+                            }
+                            else
+                            {
+                                web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+                            }
+
+                            web3.eth.defaultAccount =  web3.eth.accounts[0];
+                            var contract = new web3.eth.Contract([
+                                {
+                                    "constant": false,
+                                    "inputs": [
+                                        {
+                                            "name": "_name",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "name": "store",
+                                    "outputs": [],
+                                    "payable": false,
+                                    "stateMutability": "nonpayable",
+                                    "type": "function"
+                                },
+                                {
+                                    "inputs": [],
+                                    "payable": false,
+                                    "stateMutability": "nonpayable",
+                                    "type": "constructor"
+                                },
+                                {
+                                    "anonymous": false,
+                                    "inputs": [
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "uint256"
+                                        },
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "name": "listone",
+                                    "type": "event"
+                                },
+                                {
+                                    "constant": true,
+                                    "inputs": [
+                                        {
+                                            "name": "_index",
+                                            "type": "uint256"
+                                        }
+                                    ],
+                                    "name": "getList",
+                                    "outputs": [
+                                        {
+                                            "name": "",
+                                            "type": "uint256"
+                                        },
+                                        {
+                                            "name": "",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "payable": false,
+                                    "stateMutability": "view",
+                                    "type": "function"
+                                },
+                                {
+                                    "constant": true,
+                                    "inputs": [],
+                                    "name": "returncount",
+                                    "outputs": [
+                                        {
+                                            "name": "",
+                                            "type": "uint256"
+                                        }
+                                    ],
+                                    "payable": false,
+                                    "stateMutability": "view",
+                                    "type": "function"
+                                }
+                            ], '0x3e4b6B2a4F2C9A07af3aeC8B9d63C3A63406FE27');
+
+                            contract.methods.returncount().call(function(error, result){
+                                if(!error) {
+                                    length = parseInt(result);
+                                }else{
+                                    length = 0;
+                                }
+                            }).then(()=>{
+                                for( var i = 0 ; i < length; i++)
+                                {
+                                    contract.methods.getList(100+i).call(function(error, result){
+                                        if(!error)
+                                        {
+                                            document.getElementById('datainput').innerHTML += "<tr><td>" + parseInt(result[0]) +"</td><td>" + result[1] +" </td></tr>";
+                                        }
+                                        else
+                                        {
+                                            alert("check the backend");
+                                        }
+                                    });
+                                }
+                            });
+
+                            
+                            $('#confirm').click(function(){
+                               var t = $('#tname').val();
+                               web3.eth.getAccounts().then(function (accounts) {
+                                    var acc = accounts[0];
+                                    return contract.methods.store(t).send({from:acc});
+                               }).then(() => {
+                                   alert('Successfully enter into the blockchain!');
+                                   window.location.reload();
+                               }).catch(function(er){
+                                  consle.log(er);
+                               });
+                            });
+
+                        </script>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+</body>
+</html>
