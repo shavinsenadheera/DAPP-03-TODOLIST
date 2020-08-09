@@ -40,7 +40,7 @@
                             var length=0;
                             if(typeof web3 !== 'undefined')
                             {
-                                web3  = new Web3(web3.currentProvider());
+                                web3  = new Web3(web3.currentProvider);
                             }
                             else
                             {
@@ -49,6 +49,20 @@
 
                             web3.eth.defaultAccount =  web3.eth.accounts[0];
                             var contract = new web3.eth.Contract([
+                                {
+                                    "constant": false,
+                                    "inputs": [
+                                        {
+                                            "name": "_index",
+                                            "type": "uint256"
+                                        }
+                                    ],
+                                    "name": "deleteItem",
+                                    "outputs": [],
+                                    "payable": false,
+                                    "stateMutability": "nonpayable",
+                                    "type": "function"
+                                },
                                 {
                                     "constant": false,
                                     "inputs": [
@@ -84,6 +98,23 @@
                                         }
                                     ],
                                     "name": "listone",
+                                    "type": "event"
+                                },
+                                {
+                                    "anonymous": false,
+                                    "inputs": [
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "uint256"
+                                        },
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "address"
+                                        }
+                                    ],
+                                    "name": "trns",
                                     "type": "event"
                                 },
                                 {
@@ -123,7 +154,7 @@
                                     "stateMutability": "view",
                                     "type": "function"
                                 }
-                            ], '0x5A588Eb73E15ed4931336E93EEe5Bcadf674CBB6');
+                            ], '0x8fEc221dc8a93416903aa8Dfd19190c868c067Cf');
 
                             contract.methods.returncount().call(function(error, result){
                                 if(!error) {
@@ -160,6 +191,8 @@
                                   consle.log(er);
                                });
                             });
+
+                            
 
                         </script>
                     </tr>
