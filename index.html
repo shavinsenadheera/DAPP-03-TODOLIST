@@ -16,17 +16,18 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
-    <div class="navbar navbar-expand-lg bg-dark">
+    <nav class="navbar navbar-expand-lg bg-dark">
         <div class="navbar-brand text-warning">To Do List v.01 <p style="font-size: 8px" class="text-light">smart contract - V</p></div>
-    </div>
+    </nav>
     <div class="container align-content-center">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 text-center">
                 <div class="form-group m-4">
                     <input type="text" class="form-control text-danger" placeholder="Task Name" id="tname">
-                    <button class="btn btn-deep-orange" id="confirm"> Confirm Task</button>
+                    <button class="btn btn-deep-orange" id="confirm"> Process Task</button>
                 </div>
-                <table class="text-center table-hover table-bordered lime m-4" style="width:100%">
+                <span class="text-capitalize text-danger font-weight-bolder" style="font-size: 30px">Task To Do</span>
+                <table class="text-center table-hover table-borderless table-primary" style="width:100%">
                     <thead>
                     <tr>
                         <th>TASK ID</th>
@@ -122,7 +123,7 @@
                                     "stateMutability": "view",
                                     "type": "function"
                                 }
-                            ], '0x3e4b6B2a4F2C9A07af3aeC8B9d63C3A63406FE27');
+                            ], '0x5A588Eb73E15ed4931336E93EEe5Bcadf674CBB6');
 
                             contract.methods.returncount().call(function(error, result){
                                 if(!error) {
