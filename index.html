@@ -25,12 +25,15 @@
                 <div class="form-group m-4">
                     <input type="text" class="form-control text-danger" placeholder="Task Name" id="tname">
                     <button class="btn btn-deep-orange" id="confirm"> Process Task</button>
+                    <button class="btn btn-amber" id="donetask">Done Task</button>
+                    <input type="text" class="form-control text-success" placeholder="Block ID" id="tid">
                 </div>
                 <span class="text-capitalize text-danger font-weight-bolder" style="font-size: 30px">Task To Do</span>
                 <table class="text-center table-hover table-borderless table-primary" style="width:100%">
                     <thead>
                     <tr>
                         <th>TASK ID</th>
+                        <th>BLOCK ID</th>
                         <th>TASK NAME</th>
                     </tr>
                     </thead>
@@ -38,9 +41,10 @@
 
                         <script>
                             var length=0;
+                            var count=0;
                             if(typeof web3 !== 'undefined')
                             {
-                                web3  = new Web3(web3.currentProvider());
+                                web3  = new Web3(web3.currentProvider);
                             }
                             else
                             {
@@ -49,6 +53,20 @@
 
                             web3.eth.defaultAccount =  web3.eth.accounts[0];
                             var contract = new web3.eth.Contract([
+                                {
+                                    "constant": false,
+                                    "inputs": [
+                                        {
+                                            "name": "_index",
+                                            "type": "uint256"
+                                        }
+                                    ],
+                                    "name": "deleteItem",
+                                    "outputs": [],
+                                    "payable": false,
+                                    "stateMutability": "nonpayable",
+                                    "type": "function"
+                                },
                                 {
                                     "constant": false,
                                     "inputs": [
@@ -84,6 +102,23 @@
                                         }
                                     ],
                                     "name": "listone",
+                                    "type": "event"
+                                },
+                                {
+                                    "anonymous": false,
+                                    "inputs": [
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "uint256"
+                                        },
+                                        {
+                                            "indexed": false,
+                                            "name": "",
+                                            "type": "address"
+                                        }
+                                    ],
+                                    "name": "trns",
                                     "type": "event"
                                 },
                                 {
@@ -123,7 +158,7 @@
                                     "stateMutability": "view",
                                     "type": "function"
                                 }
-                            ], '0x5A588Eb73E15ed4931336E93EEe5Bcadf674CBB6');
+                            ], '0x8fEc221dc8a93416903aa8Dfd19190c868c067Cf');
 
                             contract.methods.returncount().call(function(error, result){
                                 if(!error) {
@@ -137,7 +172,15 @@
                                     contract.methods.getList(100+i).call(function(error, result){
                                         if(!error)
                                         {
-                                            document.getElementById('datainput').innerHTML += "<tr><td>" + parseInt(result[0]) +"</td><td>" + result[1] +" </td></tr>";
+                                            if(parseInt(result[0])==0)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                count++;
+                                                document.getElementById('datainput').innerHTML += "<tr><td>" + count + "</td><td>"+ parseInt(result[0]) +"</td><td>" + result[1] + " </td></tr>";
+                                            }
                                         }
                                         else
                                         {
@@ -157,8 +200,21 @@
                                    alert('Successfully enter into the blockchain!');
                                    window.location.reload();
                                }).catch(function(er){
-                                  consle.log(er);
+                                  console.log(er);
                                });
+                            });
+
+                            $('#donetask').click(function(){
+                                var t = parseInt($('#tid').val()) + 99;
+                                web3.eth.getAccounts().then(function(accounts){
+                                   var acc = accounts[0];
+                                   return contract.methods.deleteItem(parseInt(t)).send({from:acc});
+                                }).then(()=>{
+                                    alert('Successfully delete from the blockchain!');
+                                    window.location.reload();
+                                }).catch(function(er){
+                                    console.log(er);
+                                });
                             });
 
                         </script>
